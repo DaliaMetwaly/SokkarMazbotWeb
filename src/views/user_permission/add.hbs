@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{{> head}}
+
+<body>
+
+<div id="wrapper">
+
+    {{> navbar}}
+
+    {{> sidenav}}
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Add User permission</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        {{# if errors }}
+            {{# each errors }}
+                <p class="alert alert-danger">{{ this.msg }}</p>
+            {{/each}}
+        {{/if}}
+        <div id="AllErrors" class="alert alert-danger" style="display: none"></div>
+
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        User Elements
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <form role="form" action="/user_permission/add" method="post" >
+                                    <div class="form-group">
+                                        <label> Permission Title</label>
+                                        <input class="form-control" name="title"  id="title" required >
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> Description</label>
+                                        <textarea class="form-control" rows="3" name="description" id="description"></textarea>
+                                    </div>
+                                    <button type="submit" id="submit" class="btn btn-default">Submit Button</button>
+
+                                </form>
+                            </div>
+                            <!-- /.col-lg-6 (nested) -->
+
+                            <!-- /.col-lg-6 (nested) -->
+                        </div>
+                        <!-- /.row (nested) -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#page-wrapper -->
+    {{> scripts}}
+    <script src="https://cdn.rawgit.com/PascaleBeier/bootstrap-validate/v2.2.0/dist/bootstrap-validate.js"></script>
+
+    <script>
+        bootstrapValidate('#email', 'email:Enter a valid email address');
+
+        $(document).ready(function(){
+            var title,description,image;
+            $("#submit").click(function(){
+                title=$("#title").val();
+                description=$("#description").val();
+                image=$("#image").val();
+                var localApiUrl ='http://web-sokar-test.herokuapp.com';
+
+                fetch(localApiUrl+'add_categories',
+                        {
+                            method: 'POST',
+                            body: JSON.stringify({title: title,description: description,image:image}),
+                            headers: {"Content-Type": "application/json"}
+                        }).then((Response)=>{
+                    Response.json().then((data)=>{
+                        if(data.errors)
+                        {
+                            document.getElementById("AllErrors").style.display = "block";
+                            var inputs =data.errors.length;
+                            for (i = 0; i <= inputs; i++) {
+                                    document.getElementById("AllErrors").innerHTML+="<li>"+ data.errors[i].msg+ "</li>" ;
+                            }
+
+                        }
+                        else
+                        {
+                            alert("login success");
+                            window.location.href = localApiUrl+"category";
+
+                        }
+
+                    })
+
+                })
+
+            });
+        });
+    </script>
+</div>
+</body>
+
+</html>

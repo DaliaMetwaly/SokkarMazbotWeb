@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{{> head}}
+
+<body>
+
+    <div id="wrapper">
+
+        {{> navbar}}
+
+        {{> sidenav}}
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" style="float: right;">البرامج الغذائية</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12" style="direction: rtl;float:right">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <button type="button" id="addbtn" class="btn btn-success" style="margin-bottom:2% ;">اضافة</button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id='viewtable'>
+                                    <thead>
+                                        <tr>
+                                             <th style="text-align: right;">
+                                              الاسم    
+                                            </th>
+                                            <th style="text-align: right;">
+                                               الوصف    
+                                            </th>
+                                            <th style="text-align: right;">
+                                               السعرات الحراريه    
+                                            </th>
+                                            <th style="text-align: right;">
+                                               الكربوهيدرات    
+                                            </th>
+                                            <th style="text-align: right;">
+                                               البروتين    
+                                            </th>
+                                            <th style="text-align: right;">
+                                               الدهون    
+                                            </th>
+                                            <th style="text-align: right;">
+                                               المدة    
+                                            </th>
+                                            <th style="text-align: right;">
+                                               البرنامج الغذائي    
+                                            </th>
+                                             <th style="text-align: right;">
+                                                موافقة علي العرض    
+                                            </th>
+                                            <th style="text-align: right;">
+                                                  تفعيل    
+                                            </th>
+                                            <th style="width: 10%;">
+
+                                            </th>
+                                             <th style="width: 10%;">
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{!-- <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr> --}}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+     <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header" >
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="float: left;">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel" style="float: right;">حذف</h4>
+                                        </div>
+                                        <div class="modal-body" style="direction: rtl;">
+                                            <input id="hiddenId" type="hidden"/>
+                                            هل انت متأكد من الحذف؟
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">الغاء</button>
+                                            <button type="button" id="deleteBtn" class="btn btn-primary">تأكيد</button>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <!-- /.modal -->
+
+
+    {{> scripts}}
+
+ <script>
+     
+    $(document ).ready(function() {
+
+       getData('suggestedmeal/all').then(function(result) {
+        $.each(result.data, function(i,item) {
+            var isApprovedchk=item.isApproved==true?' checked':' ';
+            var isActivechk=item.isActive==true?' checked':' ';
+
+             $("#viewtable").append("<tr id='"+item._id+"'>" +
+                          "<td>"+item.title +"</td>"+
+                          "<td>"+item.description +"</td>"+
+                          "<td>"+item.calories    +"</td>"+
+                          "<td>"+item.carbohydrate+"</td>"+
+                          "<td>"+item.protein     +"</td>"+
+                          "<td>"+item.fats        +"</td>"+
+                          "<td>"+item.duration    +"</td>"+
+                          "<td>"+item.type.title  +"</td>"+
+                          "<td><input type='checkbox' disabled class='form-control' "+isApprovedchk+"></td>"+
+                          "<td><input type='checkbox' disabled class='form-control' "+isActivechk+">  </td>"+
+                         
+                    "<td> <a href='/suggestedmeal/edit?id="+item._id+"' class='btn btn-primary'>تعديل</a></td>"+
+                    "<td> <button type='button' data-toggle='modal' data-id='"+item._id+"' onclick=sendData(this) class='btn btn-danger' >حذف</button></td></tr>"); 
+        });
+
+      });
+
+    });
+
+
+    $('#addbtn').click(function(){
+    window.location.href =webUrl+"suggestedmeal/add";
+    });
+
+    $('#deleteBtn').click(function(){
+       deleteTableRow('suggestedmeal/delete',$("#hiddenId").val(),'suggestedmeal');
+       $("#myModal").modal("toggle");
+    });
+    
+
+ </script>
+    
+</body>
+
+</html>

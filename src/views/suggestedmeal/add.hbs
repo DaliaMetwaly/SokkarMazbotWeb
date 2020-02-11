@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{{> head}}
+
+<body>
+
+    <div id="wrapper">
+
+        {{> navbar}}
+
+        {{> sidenav}}
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" style="float: right;">اضافة وجبات مقترحة</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="direction: rtl;">
+                 اضافة وجبات مقترحة 
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12" style="float: right;direction:rtl;">
+                                    <form role="form">
+                                        
+                                        <div class="form-group">
+                                            <label>الاسم</label>
+                                            <input id="nametxt" class="form-control" placeholder="اضف الاسم">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>الوصف</label>
+                                            <input id="descriptiontxt" class="form-control" placeholder="اضف الوصف">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>السعرات الحراريه</label>
+                                            <input id="caloriestxt" class="form-control" placeholder="اضف السعرات حراريه">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> الكربوهيدرات</label>
+                                            <input id="carbohydratetxt" class="form-control" placeholder="اضف الكربوهيدرات">
+                                        </div>
+
+                                         <div class="form-group">
+                                            <label> البروتين</label>
+                                            <input id="proteintxt" class="form-control" placeholder="اضف البروتين">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> الدهون</label>
+                                            <input id="fatstxt" class="form-control" placeholder="اضف الدهون">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label> المدة</label>
+                                            <input id="durationtxt" class="form-control" placeholder="اضف المدة">
+                                        </div>
+
+                                        
+                                         <div class="form-group">
+                                            <label>البرنامج الغذائي</label><br/>
+                                            <select id="mealtypeddl" class="form-control"></select>
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <label> موافقة علي العرض</label>
+                                            <input id="isApprovedchk" type="checkbox" value="off" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>تفعيل</label>
+                                            <input id="isActivechk" type="checkbox" value="off" class="form-control">
+                                        </div>
+                                      
+                                        <div class="form-group" style="text-align: center;">
+                                        <button type="button" id="savebtn" class="btn btn-success">حفظ</button>
+                                         <button type="button" onclick="cancel('suggestedmeal')" class="btn btn-danger">الغاء</button>
+                                        </div>
+                                    </form>
+                                </div>
+                               
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+    {{> scripts}}
+
+</body>
+
+<script src="/dist/js/api/request.js"></script>
+<script>
+    $(document ).ready(function() {
+
+      getData('mealtype/all').then(function(result) {
+        $.each(result.data, function(i,item) {
+            $('#mealtypeddl').append("<option value='"+item._id+"'>" +item.title+" </option>"); 
+        });
+
+      });
+       
+    });
+
+    $('#savebtn').click(function(){
+       addTableRow('suggestedmeal/add',JSON.stringify({
+
+                                                       title:       $('#nametxt').val(),
+                                                       description: $('#descriptiontxt').val(),
+                                                       calories:    $('#caloriestxt').val(),
+                                                       carbohydrate:$('#carbohydratetxt').val(),
+                                                       protein:     $('#proteintxt').val(),
+                                                       fats:        $('#fatstxt').val(),
+                                                       duration:    $('#durationtxt').val(),
+                                                       type:        $('#mealtypeddl').children("option:selected").val(),
+                                                       isApproved:  ($('#isApprovedchk').is(':checked'))?true:false,
+                                                       isActive:    ($('#isActivechk').is(':checked'))?true:false,
+                                                       
+                                                       }),'suggestedmeal')   
+    })
+          
+</script>
+
+</html>

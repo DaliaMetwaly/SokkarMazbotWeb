@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar">
+​
+{{> head}}
+​
+<body>
+​
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Please Sign In</h3>
+                </div>
+
+
+                <div class="panel-body">
+<!--                    <form role="form" action="/dashboard" method="post"  >-->
+
+                    <div id="AllErrors" class="alert alert-danger" style="display: none"></div>
+                        <fieldset>
+                            <div class="form-group">
+                                <input type="text" name="user_email" id="_email" class="form-control" placeholder="Email"  required>
+
+
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="user_pass" id="_pass" class="form-control" placeholder="Password" required>
+
+
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input name="remember" type="checkbox" value="Remember Me">Remember Me
+                                </label>
+                            </div>
+                            <!-- Change this to a button or input when using this as a form -->
+                            <button type="submit" id="submit" class="btn btn-lg btn-success btn-block">Login</button>
+                        </fieldset>
+<!--                    </form>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+​
+{{> scripts}}
+
+​<script>
+    $(document).ready(function(){
+        var useremail,userpassword;
+        $("#submit").click(function(){
+
+            useremail=$("#_email").val();
+            userpassword=$("#_pass").val();
+
+            var ApiUrl ='http://web-sokar-api-test.herokuapp.com/1.0/auth/login';
+            $.ajax(ApiUrl,{
+                'data': JSON.stringify({
+                    email: useremail,
+                    password: userpassword,
+
+                }), //{action:'x',params:['a','b','c']}
+                'type': 'POST',
+                'processData': false,
+                'contentType': 'application/json' ,//typically 'application/x-www-form-urlencoded', but the service you are calling may expect 'text/json'... check with the service to see what they expect as content-type in the HTTP header.
+                error: function(errorData){
+
+                    $('#AllErrors').val('');
+                    $("#AllErrors").show();
+                    $('#AllErrors').html("<li>" + errorData.responseJSON.error.message + "</li>");
+                    // document.getElementById("AllErrors").innerHTML+="<li>"+ errorData.responseJSON.error.message  + "</li>" ;
+                },
+                success: function (data) {
+
+                    document.cookie = "userToken="+data.data.token;
+                    var ApiUrlUser ='http://web-sokar-api-test.herokuapp.com/1.0/users/me?token='+data.data.token;
+                    $.ajax(ApiUrlUser,{
+                        'data': JSON.stringify({
+                            userId: 'me',
+                        }),
+                        'type': 'GET',
+                        'processData': false,
+                        'contentType': 'application/json' ,//typically 'application/x-www-form-urlencoded', but the service you are calling may expect 'text/json'... check with the service to see what they expect as content-type in the HTTP header.
+                        error: function(errorData) {
+                            $('#AllErrors').val('');
+                            $("#AllErrors").show();
+                            $('#AllErrors').html("<li>" + errorData.responseJSON.error.message + "</li>");
+                        },
+                        success: function (dataUser) {
+
+                            document.cookie = "userinfo="+JSON.stringify(dataUser.data);
+                            // document.cookie = "userinfo="+data.data.token;
+                            window.location.href="/dashboard";
+
+
+
+                        }
+                    });
+
+                    // window.location.href="/dashboard";
+
+
+
+            }
+            });
+
+        });
+    });
+</script>
+
+</body>
+​
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{{> head}}
+
+<body>
+
+<div id="wrapper">
+
+    {{> navbar}}
+
+    {{> sidenav}}
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Add User</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        {{old_data}}
+        {{# if register_error }}
+            {{# each register_error}}
+                <p class="alert alert-danger">{{ this }}</p>
+            {{/each}}
+        {{/if}}
+        <div id="AllErrors" class="alert alert-danger" style="display: none"></div>
+
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        User Elements
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div id="AllErrors" class="alert alert-danger" style="display: none"></div>
+                                <!--                                <form role="form" action="/add_user" method="post" data-toggle="validator" enctype="multipart/form-data">-->
+                                <input  type ="hidden" name="user_id" value="{{id}}" id="user_id"  >
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input class="form-control" name="first_name"  id="first_name" required >
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input class="form-control" name="last_name"  id="last_name" required >
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input class="form-control" name="email"  id="email" type="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input class="form-control" name="password"  id="password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>user Image</label>
+                                    <input class="form-control" type="file" name="image" id="image">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input class="form-control" name="phone" id="phone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Gender</label>
+                                    <select class="form-control" name="gender" required>
+                                        <option value="">Choose</option>
+                                        <option value="1">Male</option>
+                                        <option value="2">female</option>
+
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Country</label>
+                                    <select class="form-control" name="country" id ="country" required>
+
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <select class="form-control" name="city" id ="city" required>
+
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>User Type</label>
+                                    <select class="form-control" name="user_type" id ="user_type" required>
+
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" class="custom-control-input" id="defaultChecked2" checked>seen Info
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" id="submit" class="btn btn-default">Submit Button</button>
+
+                                <!--                                </form>-->
+                            </div>
+                            <!-- /.col-lg-6 (nested) -->
+
+                            <!-- /.col-lg-6 (nested) -->
+                        </div>
+                        <!-- /.row (nested) -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#page-wrapper -->
+    {{> scripts}}
+    <script>
+        $(document).ready(function(){
+            var user_id=document.getElementById("user_id").value;
+            var  ApiUrlUserInfo=''+user_id;
+            $.ajax(ApiUrlUserInfo,{
+                'type': 'GET',
+                'processData': false,
+                'contentType': 'application/json' ,//typically 'application/x-www-form-urlencoded', but the service you are calling may expect 'text/json'... check with the service to see what they expect as content-type in the HTTP header.
+                error: function(xhr, status, error) {
+                    document.getElementById("AllErrors").innerHTML='';
+                    document.getElementById("AllErrors").style.display = "block";
+                    document.getElementById("AllErrors").innerHTML+="<li>"+ error + "</li>" ;
+
+                },
+                success: function (data) {
+                    document.getElementById("first_name").value=data.data.first_name;
+                    document.getElementById("last_name").value=data.data.last_name;
+                }
+            });
+            var  ApiUrlCountries='';
+            $.ajax(ApiUrlCountries,{
+                'type': 'GET',
+                'processData': false,
+                'contentType': 'application/json' ,//typically 'application/x-www-form-urlencoded', but the service you are calling may expect 'text/json'... check with the service to see what they expect as content-type in the HTTP header.
+                error: function(xhr, status, error) {
+                    document.getElementById("AllErrors").innerHTML='';
+                    document.getElementById("AllErrors").style.display = "block";
+                    document.getElementById("AllErrors").innerHTML+="<li>"+ error + "</li>" ;
+
+                },
+                success: function (data) {
+                    $.each(data.data, function(i,item) {
+                        alert(data);
+
+
+                        $("#country").append("<option value="+item._id+">"+item.name +"</option>");
+                    });
+
+                }
+            });
+
+            var  ApiUrlCity='';
+            $.ajax(ApiUrlCity,{
+                'type': 'GET',
+                'processData': false,
+                'contentType': 'application/json' ,//typically 'application/x-www-form-urlencoded', but the service you are calling may expect 'text/json'... check with the service to see what they expect as content-type in the HTTP header.
+                error: function(xhr, status, error) {
+                    document.getElementById("AllErrors").innerHTML='';
+                    document.getElementById("AllErrors").style.display = "block";
+                    document.getElementById("AllErrors").innerHTML+="<li>"+ error + "</li>" ;
+
+                },
+                success: function (data) {
+                    $.each(data.data, function(i,item) {
+                        alert(data);
+
+
+                        $("#city").append("<option value="+item._id+">"+item.name +"</option>");
+                    });
+
+                }
+            });
+
+            var  ApiUrlUserRole='';
+            $.ajax(ApiUrlUserRole,{
+                'type': 'GET',
+                'processData': false,
+                'contentType': 'application/json' ,//typically 'application/x-www-form-urlencoded', but the service you are calling may expect 'text/json'... check with the service to see what they expect as content-type in the HTTP header.
+                error: function(xhr, status, error) {
+                    document.getElementById("AllErrors").innerHTML='';
+                    document.getElementById("AllErrors").style.display = "block";
+                    document.getElementById("AllErrors").innerHTML+="<li>"+ error + "</li>" ;
+
+                },
+                success: function (data) {
+                    $.each(data.data, function(i,item) {
+                        alert(data);
+                        $("#user_type").append("<option value="+item._id+">"+item.name +"</option>");
+                    });
+
+                }
+            });
+            var first_name,last_name,email,password,image,phone,gender,country,city,user_type;
+            $("#submit").click(function(){
+                first_name=$("#first_name").val();
+                last_name=$("#last_name").val();
+                email=$("#email").val();
+                password=$("#password").val();
+                image=$("#image").val();
+                phone=$("#phone").val();
+                gender=$("#gender").val();
+                country=$("#country").val();
+                city=$("#city").val();
+                user_type=$("#user_type").val();
+                var ApiUrl ='https://api.staff.com:443/api/1.0/editUser/'+user_id;
+                $.ajax(ApiUrl,{
+                    'data': JSON.stringify({deviceId: "",
+                        first_name:first_name,
+                        last_name:last_name,
+                        email:email,
+                        password:password,
+                        image:image,
+                        phone:phone,
+                        gender:gender,
+                        country:country,
+                        city:city,
+                        user_type:user_type,
+
+                    }), //{action:'x',params:['a','b','c']}
+                    'type': 'POST',
+                    'processData': false,
+                    'contentType': 'application/json' ,//typically 'application/x-www-form-urlencoded', but the service you are calling may expect 'text/json'... check with the service to see what they expect as content-type in the HTTP header.
+                    error: function(xhr, status, error) {
+                        document.getElementById("AllErrors").innerHTML='';
+                        document.getElementById("AllErrors").style.display = "block";
+                        document.getElementById("AllErrors").innerHTML+="<li>"+ error + "</li>" ;
+
+                    },
+                    success: function (data) {
+
+
+                        window.location.href="/users";
+
+
+
+                    }
+                });
+
+            });
+        });
+    </script>
+</div>
+</body>
+
+</html>

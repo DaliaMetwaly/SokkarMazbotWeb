@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{{> head}}
+
+<body>
+
+    <div id="wrapper">
+
+        {{> navbar}}
+
+        {{> sidenav}}
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" style="float: right;">قائمة المرضى</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div id="AllErrors" class="alert alert-danger" style="display: none"></div>
+
+            <div class="row">
+                <div class="col-lg-12" style="direction: rtl;float:right">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <button type="button" id="addbtn" class="btn btn-success" style="margin-bottom:2% ;">أضافة</button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id='viewtable'>
+                                    <thead>
+                                        <tr>
+                                             <th style="text-align: right;">
+                                             الاسم
+                                            </th>
+                                            <th style="text-align: right;">
+                                                البريد الالكترونى
+                                            </th>
+                                            <th style="text-align: right;">
+                                                الهاتف
+                                            </th>
+
+                                            <th style="text-align: right;">
+                                                البلد
+                                            </th>
+                                            <th style="text-align: right;">
+                                              المحافظة
+                                            </th>
+                                            <th style="width: 10%;">
+                                                معدل النشاط
+                                            </th>
+                                             <th style="width: 10%;">
+                                               النظام الغذائى
+                                            </th>
+                                            <th>المهام</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="float: left;">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel" style="float: right;">حذف</h4>
+                </div>
+                <div class="modal-body" style="direction: rtl;">
+                    <input id="hiddenId" type="hidden"/>
+                    هل انت متأكد من الحذف؟
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">الغاء</button>
+                    <button type="button" id="deleteBtn" class="btn btn-primary">تأكيد</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <!-- /#wrapper -->
+    {{> scripts}}
+    <script src="/dist/js/api/request.js"></script>
+ <script>
+
+     $(document).ready(function(){
+//view all users
+             var ApiUrl =getUserTokenCookie().url+'users/all?token='+getUserTokenCookie().user_token;
+             fetch(ApiUrl,
+                     {
+
+                         method: 'GET',
+                         headers: {"Content-Type": "application/json"}
+                     }).then((Response)=>{
+                 Response.json().then((data)=>{
+                     if(data.error)
+                     {
+                                     $('#AllErrors').val('');
+                                     $("#AllErrors").show();
+                                     $('#AllErrors').html("<li>" + data.error.message + "</li>");
+                     }
+                     else
+                     {
+                         $.each(data.data, function(i,item) {
+                             $("#viewtable").append("<tr><td>" + item.firstName +" "+ item.lastName +"</td>"+"<td>" + item.email + "</td>"+"<td>" + item.phone + "</td>"+"<td>" +  (typeof item.country !== "undefined" ? item.country.title : '--')  + "</td>"+"<td>" +  (typeof item.city !== "undefined" ? item.city.title : '--')  + "</td>"+"<td>" +  (typeof item.userActivity !== "undefined" ? item.userActivity.title : '--')  + "</td>"+"<td>" +  (typeof item.dietType !== "undefined" ? item.dietType.title : '--')  + "</td>"+
+                                     "<td><a href=" + webUrl +'edit_user?id='+item._id+"" + "> <button type='button' class='btn btn-primary'>Edit</button></a> <button type='button' class='btn btn-danger' data-id='"+item._id+"' onclick=sendData(this)>Delete</button></td></tr>");
+                         });
+
+                     }
+
+                 })
+
+             })
+
+     });
+
+  $('#addbtn').click(function(){
+   window.location.href = webUrl+"add_user";
+  });
+
+
+     $('#deleteBtn').click(function(){
+         deleteTableRow('users/deleteUser/',$("#hiddenId").val(),'users');
+         $("#myModal").modal("toggle");
+     });
+
+     // $('#deleteBtn').click(function(){
+     //     ApiUrlDeleteUser=""+$("#hiddenId").val();
+     //     $.ajax(ApiUrlDeleteUser,{
+     //         'type': 'DElETE',
+     //         'processData': false,
+     //         'contentType': 'application/json' ,//typically 'application/x-www-form-urlencoded', but the service you are calling may expect 'text/json'... check with the service to see what they expect as content-type in the HTTP header.
+     //         error: function(xhr, status, error) {
+     //             document.getElementById("AllErrors").innerHTML='';
+     //             document.getElementById("AllErrors").style.display = "block";
+     //             document.getElementById("AllErrors").innerHTML+="<li>"+ error + "</li>" ;
+     //         },
+     //         success: function (data) {
+     //             $("#myModal").modal("toggle");
+     //             window.location.href="/users";
+     //         }
+     //     });
+     //
+     // });
+ </script>
+
+</body>
+
+</html>

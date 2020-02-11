@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{{> head}}
+
+<body>
+
+    <div id="wrapper">
+
+        {{> navbar}}
+
+        {{> sidenav}}
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" style="float: right;">انواع السكري</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12" style="direction: rtl;float:right">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <button type="button" id="addbtn" class="btn btn-success" style="margin-bottom:2% ;">اضافة</button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id='viewtable'>
+                                    <thead>
+                                        <tr>
+                                             <th style="text-align: right;">
+                                              اسم نوع السكري     
+                                            </th>
+                                            <th style="width: 10%;">
+
+                                            </th>
+                                             <th style="width: 10%;">
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{!-- <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr> --}}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+     <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header" >
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="float: left;">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel" style="float: right;">حذف</h4>
+                                        </div>
+                                        <div class="modal-body" style="direction: rtl;">
+                                            <input id="hiddenId" type="hidden"/>
+                                            هل انت متأكد من الحذف؟
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">الغاء</button>
+                                            <button type="button" id="deleteBtn" class="btn btn-primary">تأكيد</button>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <!-- /.modal -->
+
+
+    {{> scripts}}
+ <script src="/dist/js/api/request.js"></script>
+ <script>
+     
+    $(document ).ready(function() {
+
+       getData('diabetestypes').then(function(result) {
+        $.each(result, function(i,item) {
+             $("#viewtable").append("<tr id='"+item._id+"'><td>" + item.name + "</td>"+
+                    "<td> <a href='/diabetestype/edit?id="+item._id+"&name="+item.name+"' class='btn btn-primary'>تعديل</a></td>"+
+                    "<td> <button type='button' data-toggle='modal' data-id='"+item._id+"' onclick=sendData(this) class='btn btn-danger' >حذف</button></td></tr>"); 
+        });
+
+      });
+
+    });
+
+
+    $('#addbtn').click(function(){
+    window.location.href = localApiUrl+"diabetestype/add";
+    })
+
+    $('#deleteBtn').click(function(){
+       deleteTableRow('diabetestypes/',$("#hiddenId").val(),'viewtable')
+       $("#myModal").modal("toggle");
+    })
+    
+
+ </script>
+    
+</body>
+
+</html>

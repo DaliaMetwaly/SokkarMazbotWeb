@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{{> head}}
+
+<body>
+
+    <div id="wrapper">
+
+        {{> navbar}}
+
+        {{> sidenav}}
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" style="float: right;">اضافة تصنيفات مكونات غذائية</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="direction: rtl;">
+                            اضافة تصنيفات مكونات غذائية 
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12" style="float: right;direction:rtl;">
+                                    <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/categories">
+                                         
+                                        <div class="form-group">
+                                            <label>الاسم</label>
+                                            <input id="name" name="name" type="text" class="form-control" placeholder="اضف الاسم">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>الوصف</label>
+                                            <input id="shortDescription" name="shortDescription" type="text" class="form-control" placeholder="اضف الوصف">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>الصورة</label>
+                                           <input type="file" name="image" id="image">
+                                        </div>
+                                      
+                                        <div class="form-group" style="text-align: center;">
+                                        <button type="submit" id="savebtn" class="btn btn-success">حفظ</button>
+                                         <button type="button" onclick="cancel('category')" class="btn btn-danger">الغاء</button>
+                                        </div>
+                                    </form>
+                                </div>
+                               
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+    {{> scripts}}
+
+</body>
+
+</html>

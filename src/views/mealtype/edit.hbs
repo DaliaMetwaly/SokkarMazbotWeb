@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{{> head}}
+
+<body>
+
+    <div id="wrapper">
+
+        {{> navbar}}
+
+        {{> sidenav}}
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" style="float: right;">تعديل برنامج غذائي</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+             <div id="AllErrors" class="alert alert-danger" style="display: none"></div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="direction: rtl;">
+                            تعديل برنامج غذائي
+                        </div>
+                        
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12" style="float: right;direction:rtl;">
+                                    <form role="form">
+                                        
+                                        <div class="form-group">
+                                            <label>الاسم</label>
+                                            <input id="idtxt" type="hidden" value="{{id}}" class="form-control" />
+                                            <input id="nametxt" class="form-control" placeholder="اضف الاسم"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>نسية الكربوهيدرات</label>
+                                            <input id="percentagetxt" value="{{percentage}}" class="form-control" placeholder="اضف نسية الكربوهيدرات">
+                                        </div>
+                                      
+                                        {{!-- <button type="submit" class="btn btn-default">حفظ</button>
+                                        <button type="reset" class="btn btn-default">الغاء</button> --}}
+                                        <div class="form-group" style="text-align: center;">
+                                        <button type="button" id="savebtn" class="btn btn-success">حفظ</button>
+                                        <button type="button" onclick="cancel('mealtype')" class="btn btn-danger">الغاء</button>
+                                        </div>
+                                    </form>
+                                </div>
+                               
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+    {{> scripts}}
+
+</body>
+
+<script src="/dist/js/api/request.js"></script>
+<script>
+    $('#savebtn').click(function(){
+       editTableRow('mealtype/update',JSON.stringify({id:$("#idtxt").val(), title:$('#nametxt').val(),percentage:$('#percentagetxt').val()}),$('#idtxt').val(),'mealtype')   
+    })
+         
+    $(document).ready(function(){
+            var user_id=document.getElementById("idtxt").value;
+            var  ApiUrlUserInfo=getUserTokenCookie().url+'mealtype/getinfo?id='+user_id+'&token='+getUserTokenCookie().user_token;
+            console.log('ApiUrlUserInfo'+ApiUrlUserInfo)
+            fetch(ApiUrlUserInfo,
+                    {
+                       // body: JSON.stringify({
+                         //   Id: user_id,
+                        //}),
+                        method: 'GET',
+                        headers: {"Content-Type": "application/json"}
+                    }).then((Response)=>{
+                    Response.json().then((data)=>{
+                       
+                    if(data.error)
+                    {
+                        $('#AllErrors').val('');
+                        $("#AllErrors").show();
+                        $('#AllErrors').html("<li>" + data.error.message + "</li>");
+                    }
+                    else
+                    {
+                        $("#nametxt").val(data.data[0].title);
+                        $("#percentagetxt").val(data.data[0].percentage);
+                        
+                    }
+
+                })
+
+            });
+            
+        });
+    
+ </script>
+
+</html>
